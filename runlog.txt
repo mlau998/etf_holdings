@@ -1,0 +1,180 @@
+[DEBUG] main.py loaded
+[ERROR] GRNY etf_from_html_table failed: etf_from_html_table() got an unexpected keyword argument 'source_url'
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/melanie/Downloads/holdings_scraper/scraper/main.py", line 95, in <module>
+    run(args.config, args.out, args.prev)
+  File "/Users/melanie/Downloads/holdings_scraper/scraper/main.py", line 22, in run
+    df = etf_from_csv(csv_url, m["id"], as_of_date=None, source_url=csv_url)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: etf_from_csv() got an unexpected keyword argument 'source_url'
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[OK] IVES rows=0 (CSV)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[OK] IVES rows=0 (CSV)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[OK] IVES rows=0 (CSV)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 49 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[OK] IVES rows=38 (CSV)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 187 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[OK] MPLY rows=100 (CSV)
+[DEBUG] Entering IVES etf_from_ives block
+[IVES] header_idx=5 header_line=Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[DEBUG] csv_url exists: https://strategysharesetfs.com/feeds/STRATEGYSHARES_STRATEGYSHARESMPLY_ETF_TOPHOLDINGS.CSV
+[OK] MPLY rows=100 (CSV)
+[DEBUG] csv_url exists: https://wedbushfunds.com/latest-sod-holdings
+[DEBUG] Entering IVES etf_from_ives block
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 149 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[DEBUG] csv_url exists: https://strategysharesetfs.com/feeds/STRATEGYSHARES_STRATEGYSHARESMPLY_ETF_TOPHOLDINGS.CSV
+[OK] MPLY rows=100 (CSV)
+[DEBUG] csv_url exists: https://wedbushfunds.com/latest-sod-holdings
+[DEBUG] Entering IVES etf_from_ives block
+[IVES] About to read table_text (first 5 lines):
+[IVES] table_text[0]: Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[IVES] table_text[1]: TSLA,"TESLA INC",B616C79,"90,837","$40,221,715.23",5.30536
+[IVES] table_text[2]: TSM,"TAIWAN SEMICONDUCTOR-SP ADR",2113382,"132,475","$37,187,057.25",4.90508
+[IVES] table_text[3]: ORCL,"ORACLE CORP",2661568,"118,625","$36,591,067.50",4.82647
+[IVES] table_text[4]: GOOGL,"ALPHABET INC-CL A",BYVY8G0,"143,760","$35,528,846.40",4.68636
+[IVES] df.columns=['Ticker', 'Name', 'SEDOL', 'Shares', 'Market Value', 'Weight']
+[IVES] core_present={k: (k in df.columns) for k in ['ticker','name','sedol','shares','market_value','weight']}
+[IVES] raw df shape=(35, 6)
+[IVES] rows=35 core_present={k: (k in merged.columns) for k in ['fund_ticker', 'as_of_date', 'ticker', 'name', 'cusip', 'isin', 'sedol', 'shares', 'weight_pct', 'market_value_usd']}
+[DEBUG] IVES etf_from_ives returned DataFrame with shape: (35, 11)
+[OK] IVES rows=35 (IVES CSV)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 184 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[DEBUG] csv_url exists: https://strategysharesetfs.com/feeds/STRATEGYSHARES_STRATEGYSHARESMPLY_ETF_TOPHOLDINGS.CSV
+[OK] MPLY rows=100 (CSV)
+[DEBUG] csv_url exists: https://wedbushfunds.com/latest-sod-holdings
+[DEBUG] Entering IVES etf_from_ives block
+[IVES] About to read table_text (first 5 lines):
+[IVES] table_text[0]: Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[IVES] table_text[1]: TSLA,"TESLA INC",B616C79,"90,837","$40,221,715.23",5.30536
+[IVES] table_text[2]: TSM,"TAIWAN SEMICONDUCTOR-SP ADR",2113382,"132,475","$37,187,057.25",4.90508
+[IVES] table_text[3]: ORCL,"ORACLE CORP",2661568,"118,625","$36,591,067.50",4.82647
+[IVES] table_text[4]: GOOGL,"ALPHABET INC-CL A",BYVY8G0,"143,760","$35,528,846.40",4.68636
+[IVES] df.columns=['Ticker', 'Name', 'SEDOL', 'Shares', 'Market Value', 'Weight']
+[IVES] core_present={k: (k in df.columns) for k in ['ticker','name','sedol','shares','market_value','weight']}
+[IVES] raw df shape=(35, 6)
+[IVES] rows=31 core_present={k: (k in merged.columns) for k in ['fund_ticker', 'as_of_date', 'ticker', 'name', 'cusip', 'isin', 'sedol', 'shares', 'weight_pct', 'market_value_usd']}
+[DEBUG] IVES etf_from_ives returned DataFrame with shape: (31, 11)
+[OK] IVES rows=31 (IVES CSV)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 180 rows → data/holdings_latest.csv
+[DEBUG] main.py loaded
+[GRNY] as-of via 'p.time-stamp.pt-3': 'Holdings as of September 25, 2025' -> 2025-09-25
+[OK] GRNY rows=39 (HTML table)
+[DEBUG] csv_url exists: https://strategysharesetfs.com/feeds/STRATEGYSHARES_STRATEGYSHARESMPLY_ETF_TOPHOLDINGS.CSV
+[OK] MPLY rows=100 (CSV)
+[DEBUG] csv_url exists: https://wedbushfunds.com/latest-sod-holdings
+[DEBUG] Entering IVES etf_from_ives block
+[IVES] About to read table_text (first 5 lines):
+[IVES] table_text[0]: Ticker,Name,SEDOL,Shares,"Market Value",Weight
+[IVES] table_text[1]: TSLA,"TESLA INC",B616C79,"90,837","$40,221,715.23",5.30536
+[IVES] table_text[2]: TSM,"TAIWAN SEMICONDUCTOR-SP ADR",2113382,"132,475","$37,187,057.25",4.90508
+[IVES] table_text[3]: ORCL,"ORACLE CORP",2661568,"118,625","$36,591,067.50",4.82647
+[IVES] table_text[4]: GOOGL,"ALPHABET INC-CL A",BYVY8G0,"143,760","$35,528,846.40",4.68636
+[IVES] df.columns=['Ticker', 'Name', 'SEDOL', 'Shares', 'Market Value', 'Weight']
+[IVES] core_present={k: (k in df.columns) for k in ['ticker','name','sedol','shares','market_value','weight']}
+[IVES] raw df shape=(35, 6)
+[IVES] rows=31 core_present={k: (k in merged.columns) for k in ['fund_ticker', 'as_of_date', 'ticker', 'name', 'cusip', 'isin', 'sedol', 'shares', 'weight_pct', 'market_value_usd']}
+[DEBUG] IVES etf_from_ives returned DataFrame with shape: (31, 11)
+[OK] IVES rows=31 (IVES CSV)
+[OK] TCI rows=10 (13F report_date=2025-06-30)
+[DONE] 180 rows → data/holdings_latest.csv
