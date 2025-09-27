@@ -168,31 +168,6 @@ def etf_from_html_table(page_url: str,
     merged = attach_extras(merged, keep_cols=core)
     return merged[core + ["extras"]]
 
-    # Old code before refactor to use index alignment
-    # core = ["fund_ticker","as_of_date",
-    #         "ticker","name","cusip","isin","sedol",
-    #         "shares","weight_pct","market_value_usd"]
-
-    # out = pd.DataFrame()
-    # out["fund_ticker"] = fund_id
-    # out["as_of_date"] = as_of if as_of else pd.NaT
-    
-    # for c in core[2:]:
-    #     out[c] = df[c] if c in df.columns else pd.NA
-
-    # # add any non-core columns for extras packing
-    # extra_cols = [c for c in df.columns if c not in out.columns]
-    # merged = out.join(df[extra_cols]) if extra_cols else out
-
-    # # hard-assert as_of_date is present and not lost during joins
-    # if "as_of_date" not in merged.columns or merged["as_of_date"].isna().all():
-    #     merged["as_of_date"] = as_of if as_of else pd.NaT
-
-    # # pack extras and return strictly core + extras
-    # merged = attach_extras(merged, keep_cols=core)
-    # merged["as_of_date"] = pd.to_datetime(merged["as_of_date"], errors="coerce").dt.date.astype("string")
-    # return merged[core + ["extras"]]
-
 # -------- ETF via CSV (e.g., MPLY; generic) --------
 def etf_from_csv(csv_url: str,
                  fund_id: str,

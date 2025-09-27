@@ -3,3 +3,6 @@ pandas
 lxml
 beautifulsoup4
 pyyaml
+fastapi==0.115.0
+uvicorn==0.30.6
+

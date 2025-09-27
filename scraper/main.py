@@ -80,6 +80,33 @@ def run(config_path: str, out_path: str, prev_path: str = None):
     final.to_csv(out_path, index=False)
     print(f"[DONE] {len(final)} rows → {out_path}")
 
+    os.makedirs("data", exist_ok=True)
+    final.to_json("data/holdings_latest.json", orient="records")
+
+    # append to SQLite (one row per fund/security per as_of_date)
+    import sqlite3, os
+    os.makedirs("data", exist_ok=True)
+    with sqlite3.connect("data/holdings.db") as con:
+        con.executescript(open("data/schema.sql", "r").read())
+        cur = con.cursor()
+
+        def _ident(row):
+            return row["cusip"] or row["isin"] or row["sedol"] or f"{(row['ticker'] or '').strip()}|{(row['name'] or '').strip()}"
+
+        for _, r in final.iterrows():
+            k = (r["fund_ticker"], r["as_of_date"], _ident(r))
+            cur.execute("""
+            DELETE FROM holdings
+            WHERE fund_ticker=? AND as_of_date=? AND COALESCE(cusip, isin, sedol, ticker||'|'||name)=?
+            """, k)
+            cur.execute("""
+            INSERT INTO holdings (fund_ticker, as_of_date, ticker, name, cusip, isin, sedol,
+                                    shares, weight_pct, market_value_usd, extras)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?)
+            """, (r["fund_ticker"], r["as_of_date"], r["ticker"], r["name"], r["cusip"], r["isin"], r["sedol"],
+                r["shares"], r["weight_pct"], r["market_value_usd"], r["extras"]))
+
+
     if prev_path:
         prev = pd.read_csv(prev_path)
         def key(df):
