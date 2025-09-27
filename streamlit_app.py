@@ -1,3 +1,7 @@
+# streamlit_app.py
+# Streamlit UI with: refresh button, filters, KPIs, prettier currency formatting,
+# and improved Added/Removed/Changed tabs with deltas and highlighting.
+
 import os, json, shutil, subprocess, sys
 from typing import Dict, Tuple, List
 import pandas as pd
@@ -49,19 +53,23 @@ def load_json(path: str) -> pd.DataFrame:
     for c in NUMERIC_COLS:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
-    df = df.rename(columns=DISPLAY_NAMES)
     return df
 
+def _s(v):
+    if v is None: return ""
+    if isinstance(v, float) and pd.isna(v): return ""
+    return str(v).strip()
+
 def _ident(row: pd.Series) -> str:
-    cusip = str(row.get("cusip") or "").strip()
-    isin  = str(row.get("isin") or "").strip()
-    sedol = str(row.get("sedol") or "").strip()
-    ticker = str(row.get("ticker") or "").strip()
-    name   = str(row.get("name") or "").strip()
+    cusip  = _s(row.get("cusip"))
+    isin   = _s(row.get("isin"))
+    sedol  = _s(row.get("sedol"))
+    ticker = _s(row.get("ticker"))
+    name   = _s(row.get("name"))
     return cusip or isin or sedol or f"{ticker}|{name}"
 
 def _key_tuple(row: pd.Series) -> Tuple[str, str]:
-    fund = str(row.get("fund_ticker") or row.get("Fund Ticker") or "").strip()
+    fund = _s(row.get("fund_ticker") or row.get("Fund Ticker"))
     raw = {
         "cusip":  row.get("cusip"),
         "isin":   row.get("isin"),
@@ -72,26 +80,29 @@ def _key_tuple(row: pd.Series) -> Tuple[str, str]:
     return (fund, _ident(pd.Series(raw)))
 
 def _coerce_raw(df: pd.DataFrame) -> pd.DataFrame:
-    if "Fund Ticker" in df.columns and "fund_ticker" not in df.columns:
-        df = df.rename(columns={"Fund Ticker":"fund_ticker"})
-    if "Security Name" in df.columns and "name" not in df.columns:
-        df = df.rename(columns={"Security Name":"name"})
-    if "Ticker" in df.columns and "ticker" not in df.columns:
-        df = df.rename(columns={"Ticker":"ticker"})
-    if "Portfolio Weight" in df.columns and "weight_pct" not in df.columns:
-        df = df.rename(columns={"Portfolio Weight":"weight_pct"})
-    if "Market Value (USD)" in df.columns and "market_value_usd" not in df.columns:
-        df = df.rename(columns={"Market Value (USD)":"market_value_usd"})
-    return df
+    out = df.copy()
+    ren = {}
+    if "Fund Ticker" in out.columns and "fund_ticker" not in out.columns: ren["Fund Ticker"] = "fund_ticker"
+    if "Security Name" in out.columns and "name" not in out.columns: ren["Security Name"] = "name"
+    if "Ticker" in out.columns and "ticker" not in out.columns: ren["Ticker"] = "ticker"
+    if "Portfolio Weight" in out.columns and "weight_pct" not in out.columns: ren["Portfolio Weight"] = "weight_pct"
+    if "Market Value (USD)" in out.columns and "market_value_usd" not in out.columns: ren["Market Value (USD)"] = "market_value_usd"
+    if ren: out = out.rename(columns=ren)
+    for c in DIFF_NUMERIC_COLS:
+        if c in out.columns:
+            out[c] = pd.to_numeric(out[c], errors="coerce")
+    return out
 
 def compute_diffs(new_df: pd.DataFrame, old_df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
-    new_raw = _coerce_raw(new_df.copy()); old_raw = _coerce_raw(old_df.copy())
+    new_raw = _coerce_raw(new_df)
+    old_raw = _coerce_raw(old_df)
+
     new_map = { _key_tuple(r): r for _, r in new_raw.iterrows() }
     old_map = { _key_tuple(r): r for _, r in old_raw.iterrows() }
 
     new_keys, old_keys = set(new_map), set(old_map)
-    added = pd.DataFrame([new_map[k] for k in sorted(new_keys - old_keys)]) if new_keys - old_keys else pd.DataFrame(columns=new_raw.columns)
-    removed = pd.DataFrame([old_map[k] for k in sorted(old_keys - new_keys)]) if old_keys - new_keys else pd.DataFrame(columns=old_raw.columns)
+    added_df = pd.DataFrame([new_map[k] for k in sorted(new_keys - old_keys)]) if (new_keys - old_keys) else pd.DataFrame(columns=new_raw.columns)
+    removed_df = pd.DataFrame([old_map[k] for k in sorted(old_keys - new_keys)]) if (old_keys - new_keys) else pd.DataFrame(columns=old_raw.columns)
 
     changed_records: List[Dict] = []
     for k in (new_keys & old_keys):
@@ -106,23 +117,63 @@ def compute_diffs(new_df: pd.DataFrame, old_df: pd.DataFrame) -> Dict[str, pd.Da
                 changed = True
                 rec[f"{c}_old"] = oval; rec[f"{c}_new"] = nval; rec[f"{c}_delta"] = (nval or 0) - (oval or 0)
         if changed: changed_records.append(rec)
-    changed = pd.DataFrame(changed_records)
+    changed_df = pd.DataFrame(changed_records)
 
+    # Pretty headers after diff
     rename = DISPLAY_NAMES.copy()
     rename.update({
         "weight_pct_old":"Portfolio Weight (old)","weight_pct_new":"Portfolio Weight (new)","weight_pct_delta":"Portfolio Weight (Δ)",
         "shares_old":"Shares (old)","shares_new":"Shares (new)","shares_delta":"Shares (Δ)",
         "market_value_usd_old":"Market Value USD (old)","market_value_usd_new":"Market Value USD (new)","market_value_usd_delta":"Market Value USD (Δ)",
     })
-    return {
-        "added": added.rename(columns=rename),
-        "removed": removed.rename(columns=rename),
-        "changed": changed.rename(columns=rename),
-    }
+    added_df = added_df.rename(columns=DISPLAY_NAMES)
+    removed_df = removed_df.rename(columns=DISPLAY_NAMES)
+    changed_df = changed_df.rename(columns=rename)
+
+    return {"added": added_df, "removed": removed_df, "changed": changed_df}
+
+# ------------------ DISPLAY HELPERS ------------------
+def format_display(df: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy with pretty headers and formatted currency/percent."""
+    out = df.copy()
+    out = out.rename(columns=DISPLAY_NAMES)
+    if "Market Value (USD)" in out.columns:
+        out["Market Value (USD)"] = out["Market Value (USD)"].apply(lambda x: f"${x:,.0f}" if pd.notna(x) else "")
+    if "Portfolio Weight" in out.columns:
+        out["Portfolio Weight"] = out["Portfolio Weight"].apply(lambda x: f"{x:.2f}%" if pd.notna(x) else "")
+    if "Shares" in out.columns:
+        out["Shares"] = out["Shares"].apply(lambda x: f"{x:,.0f}" if pd.notna(x) else "")
+    return out
+
+def style_changed(df: pd.DataFrame) -> pd.io.formats.style.Styler:
+    fmt_map = {}
+    if "Market Value USD (Δ)" in df.columns: fmt_map["Market Value USD (Δ)"] = "{:+,.0f}"
+    if "Market Value USD (old)" in df.columns: fmt_map["Market Value USD (old)"] = "{:,.0f}"
+    if "Market Value USD (new)" in df.columns: fmt_map["Market Value USD (new)"] = "{:,.0f}"
+    if "Shares (Δ)" in df.columns: fmt_map["Shares (Δ)"] = "{:+,.0f}"
+    if "Shares (old)" in df.columns: fmt_map["Shares (old)"] = "{:,.0f}"
+    if "Shares (new)" in df.columns: fmt_map["Shares (new)"] = "{:,.0f}"
+    if "Portfolio Weight (Δ)" in df.columns: fmt_map["Portfolio Weight (Δ)"] = "{:+.2f}%"
+    if "Portfolio Weight (old)" in df.columns: fmt_map["Portfolio Weight (old)"] = "{:.2f}%"
+    if "Portfolio Weight (new)" in df.columns: fmt_map["Portfolio Weight (new)"] = "{:.2f}%"
+
+    def color_delta(v):
+        try:
+            if pd.isna(v): return ""
+            if float(v) > 0: return "color: green;"
+            if float(v) < 0: return "color: red;"
+        except Exception:
+            return ""
+        return ""
+
+    styler = df.style.format(fmt_map)
+    for col in [c for c in df.columns if "Δ" in c]:
+        styler = styler.applymap(color_delta, subset=[col])
+    return styler
 
 # ------------------ LOAD CURRENT ------------------
 try:
-    df = load_json(DATA_PATH)
+    df_raw = load_json(DATA_PATH)
 except Exception as e:
     st.error(str(e)); st.stop()
 
@@ -136,8 +187,8 @@ with left:
             shutil.copy2(DATA_PATH, PREV_PATH)
         try:
             subprocess.run(SCRAPER_CMD, check=True)
-            load_json.clear()  # clear cache
-            df = load_json(DATA_PATH)
+            load_json.clear()
+            df_raw = load_json(DATA_PATH)
             st.success("Refresh complete.")
         except subprocess.CalledProcessError as e:
             st.error(f"Scraper failed with exit code {e.returncode}")
@@ -150,22 +201,45 @@ with mid:
             st.warning("No previous snapshot found.")
         else:
             try:
-                prev_df = load_json(PREV_PATH)
-                diffs = compute_diffs(df, prev_df)
-                a, r, c = st.tabs(["Added", "Removed", "Changed"])
-                with a:
-                    st.write(f"Added rows: {len(diffs['added'])}")
-                    st.dataframe(diffs["added"], use_container_width=True, hide_index=True)
-                with r:
-                    st.write(f"Removed rows: {len(diffs['removed'])}")
-                    st.dataframe(diffs["removed"], use_container_width=True, hide_index=True)
-                with c:
-                    st.write(f"Changed rows: {len(diffs['changed'])}")
-                    st.dataframe(diffs["changed"], use_container_width=True, hide_index=True)
+                prev_raw = load_json(PREV_PATH)
+                diffs = compute_diffs(df_raw, prev_raw)
+                added_tab, removed_tab, changed_tab = st.tabs(["🟢 Added", "🔴 Removed", "🟡 Changed"])
+
+                with added_tab:
+                    if diffs["added"].empty:
+                        st.success("No new holdings added.")
+                    else:
+                        st.dataframe(
+                            format_display(diffs["added"]),
+                            use_container_width=True,
+                            hide_index=True,
+                        )
+
+                with removed_tab:
+                    if diffs["removed"].empty:
+                        st.info("No holdings removed.")
+                    else:
+                        st.dataframe(
+                            format_display(diffs["removed"]),
+                            use_container_width=True,
+                            hide_index=True,
+                        )
+
+                with changed_tab:
+                    if diffs["changed"].empty:
+                        st.info("No changes in weight, shares, or market value.")
+                    else:
+                        st.dataframe(
+                            style_changed(diffs["changed"]),
+                            use_container_width=True,
+                            hide_index=True,
+                        )
             except Exception as e:
                 st.error(str(e))
 
 # ------------------ FILTERS ------------------
+df = df_raw.rename(columns=DISPLAY_NAMES)
+
 with st.expander("Filters", expanded=False):
     col1, col2, col3, col4 = st.columns(4)
     fund = "(All)"; sector = "(All)"
@@ -189,21 +263,32 @@ if "Sector" in fdf.columns and sector != "(All)":
 # ------------------ KPIs ------------------
 k1, k2, k3 = st.columns(3)
 k1.metric("Rows", f"{len(fdf):,}")
-if "Market Value (USD)" in fdf.columns:
-    k2.metric("Total Market Value", f"${int(fdf['Market Value (USD)'].fillna(0).sum()):,}")
-if "Portfolio Weight" in fdf.columns:
-    k3.metric("Avg Weight", f"{fdf['Portfolio Weight'].fillna(0).mean():.2f}%")
+if "Market Value (USD)" in df_raw.columns:
+    k2.metric("Total Market Value", f"${int(df_raw['market_value_usd'].fillna(0).sum()):,}")
+if "Portfolio Weight" in df.columns:
+    # Convert back to numeric safely if formatted
+    if "Portfolio Weight" in df.columns and df["Portfolio Weight"].dtype == object:
+        pw = pd.to_numeric(df_raw["weight_pct"], errors="coerce")
+        k3.metric("Avg Weight", f"{pw.fillna(0).mean():.2f}%")
+    else:
+        k3.metric("Avg Weight", f"{df['Portfolio Weight'].fillna(0).mean():.2f}%")
 
-# ------------------ TABLE ------------------
-st.dataframe(fdf, use_container_width=True, hide_index=True)
+# ------------------ TABLE (formatted) ------------------
+st.dataframe(
+    format_display(fdf),
+    use_container_width=True,
+    hide_index=True,
+)
 
 # ------------------ DOWNLOAD ------------------
+download_df = fdf.copy()
 st.download_button(
     "Download filtered CSV",
-    fdf.to_csv(index=False).encode("utf-8"),
+    download_df.to_csv(index=False).encode("utf-8"),
     file_name="holdings_filtered.csv",
     mime="text/csv",
 )
+
 
 # import os, json
 # import pandas as pd
