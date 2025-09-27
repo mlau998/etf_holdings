@@ -1,3 +1,5 @@
+const API_BASE = (window.ENV && window.ENV.API_BASE) || "http://localhost:8000";
+
 // ---- Config: choose which columns to show (in order) ----
 const COLUMNS = [
   "fund_ticker",
@@ -107,11 +109,8 @@ async function boot() {
   const root = document.getElementById("root");
   root.textContent = "Loading…";
 
-  const res = await fetch("http://localhost:8000/holdings");
-  if (!res.ok) {
-    root.textContent = "Failed to load.";
-    return;
-  }
+  const res = await fetch(`${API_BASE}/holdings`);
+  if (!res.ok) { root.textContent = "Failed to load."; return; }
   const rows = await res.json();
 
   // Optional: keep only keys you declared in COLUMNS (defensive for future fields)

@@ -8,9 +8,10 @@ JSON_PATH = os.getenv("JSON_PATH", os.path.join(DATA_DIR, "holdings_latest.json"
 
 app = FastAPI(title="Holdings API", version="0.1")
 
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],              # tighten in prod
+    allow_origins=[FRONTEND_ORIGIN],
     allow_methods=["GET", "HEAD", "OPTIONS"],
     allow_headers=["*"],
 )

@@ -1,8 +1,10 @@
 requests
-pandas
+pandas>=2.0
 lxml
 beautifulsoup4
 pyyaml
 fastapi==0.115.0
 uvicorn==0.30.6
+streamlit>=1.36
+
 

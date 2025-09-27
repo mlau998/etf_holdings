@@ -10,7 +10,6 @@ build/
 
 # data outputs
 data/*.csv
-data/*.json
 data/*.db
 
 # secrets
