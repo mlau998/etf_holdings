@@ -1,3 +1,51 @@
+# -----------------------------
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# -----------------------------
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# -----------------------------
+# Local environment and secrets
+*.env
+.streamlit/secrets.toml
+
+# -----------------------------
+# Streamlit cache
+.streamlit/cache/
+.streamlit/logs/
+
+# -----------------------------
+# Data and generated outputs
+data/holdings_latest.csv
+data/holdings_prev.json
+data/holdings.db
+*.diff.txt
+*.log
+runlog.txt
+
+# -----------------------------
+# Legacy frontend/backend (kept locally, not tracked)
+web/
+api/
+copy_of_csv_files/
+
+# -----------------------------
+# OS & editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+
 # env / cache / artifacts
 .venv/
 .http_cache/
