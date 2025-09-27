@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 
 # --------- CONFIG ---------
-DATA_PATH = os.getenv("DATA_PATH", "data/holdings.json")
+DATA_PATH = os.getenv("DATA_PATH", "data/holdings_latest.json")
 
 COLUMNS = [
     "fund_ticker",
